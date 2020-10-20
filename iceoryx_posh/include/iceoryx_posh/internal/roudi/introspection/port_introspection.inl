@@ -107,6 +107,14 @@ template <typename SenderPort, typename ReceiverPort>
 void PortIntrospection<SenderPort, ReceiverPort>::sendPortData()
 {
     auto chunkHeader = m_senderPort.reserveChunk(sizeof(PortIntrospectionFieldTopic));
+
+    if (!chunkHeader)
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": unable to reserve PortIntrospectionFieldTopic chunk (" <<
+            sizeof(PortIntrospectionFieldTopic) << " bytes)\n";
+        return;
+    }
+
     auto sample = static_cast<PortIntrospectionFieldTopic*>(chunkHeader->payload());
     new (sample) PortIntrospectionFieldTopic();
 
@@ -119,6 +127,14 @@ template <typename SenderPort, typename ReceiverPort>
 void PortIntrospection<SenderPort, ReceiverPort>::sendThroughputData()
 {
     auto chunkHeader = m_senderPortThroughput.reserveChunk(sizeof(PortThroughputIntrospectionFieldTopic));
+
+    if (!chunkHeader)
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": unable to reserve PortThroughputData chunk (" <<
+            sizeof(PortThroughputIntrospectionFieldTopic) << " bytes)\n";
+        return;
+    }
+
     auto throughputSample = static_cast<PortThroughputIntrospectionFieldTopic*>(chunkHeader->payload());
     new (throughputSample) PortThroughputIntrospectionFieldTopic();
 
@@ -131,6 +147,14 @@ template <typename SenderPort, typename ReceiverPort>
 void PortIntrospection<SenderPort, ReceiverPort>::sendReceiverPortsData()
 {
     auto chunkInfo = m_senderPortReceiverPortsData.reserveChunk(sizeof(ReceiverPortChangingIntrospectionFieldTopic));
+
+    if (!chunkInfo)
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": unable to reserve ReceiverPortsData chunk (" <<
+            sizeof(ReceiverPortChangingIntrospectionFieldTopic) << " bytes)\n";
+        return;
+    }
+
     auto receiverPortChangingDataSample =
         static_cast<ReceiverPortChangingIntrospectionFieldTopic*>(chunkInfo->payload());
     new (receiverPortChangingDataSample) ReceiverPortChangingIntrospectionFieldTopic();

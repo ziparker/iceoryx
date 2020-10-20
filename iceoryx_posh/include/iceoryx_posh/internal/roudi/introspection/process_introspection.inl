@@ -187,6 +187,15 @@ void ProcessIntrospection<SenderPort>::send()
     if (m_processListNewData)
     {
         auto chunkHeader = m_senderPort.reserveChunk(sizeof(ProcessIntrospectionFieldTopic));
+
+        if (!chunkHeader)
+        {
+            std::cerr << __PRETTY_FUNCTION__ << ": unable to reserve ProcessIntrospectionFieldTopic chunk (" <<
+                sizeof(ProcessIntrospectionFieldTopic) << " bytes)\n";
+
+            return;
+        }
+
         auto sample = static_cast<ProcessIntrospectionFieldTopic*>(chunkHeader->payload());
         new (sample) ProcessIntrospectionFieldTopic;
 

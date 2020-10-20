@@ -131,6 +131,14 @@ void MemPoolIntrospection<MemoryManager, SegmentManager, SenderPort>::send()
         uint32_t id = 0;
 
         auto chunkHeader = m_senderPort.reserveChunk(sizeof(Topic));
+
+        if (!chunkHeader)
+        {
+            std::cerr << __PRETTY_FUNCTION__ << ": unable to reserve topic chunk (" <<
+                sizeof(Topic) << " bytes)\n";
+            return;
+        }
+
         auto sample = static_cast<Topic*>(chunkHeader->payload());
         new (sample) Topic;
 
@@ -144,6 +152,14 @@ void MemPoolIntrospection<MemoryManager, SegmentManager, SenderPort>::send()
         {
             ++id;
             auto chunkHeader = m_senderPort.reserveChunk(sizeof(Topic));
+
+            if (!chunkHeader)
+            {
+                std::cerr << __PRETTY_FUNCTION__ << ": unable to reserve topic chunk (" <<
+                    sizeof(Topic) << " bytes)\n";
+                continue;
+            }
+
             auto sample = static_cast<Topic*>(chunkHeader->payload());
             new (sample) Topic;
 
